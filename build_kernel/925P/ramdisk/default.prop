@@ -1,0 +1,37 @@
+#
+# ADDITIONAL_DEFAULT_PROPERTIES
+#
+persist.radio.apm_sim_not_pwdn=1
+persist.radio.add_power_save=1
+persist.radio.snapshot_enabled=1
+persist.radio.snapshot_timer=22
+persist.eons.enabled=false
+persist.data.netmgrd.qos.enable=false
+telephony.lteOnCdmaDevice=1
+persist.rmnet.mux=enabled
+rild.libpath=/system/lib64/libsec-ril.so
+persist.cne.feature=0
+persist.security.ams.enforcing=1
+ro.secure=0
+ro.allow.mock.location=0
+ro.debuggable=0
+ro.adb.secure=1
+persist.sys.usb.config=mtp
+ro.zygote=zygote64_32
+dalvik.vm.dex2oat-Xms=64m
+dalvik.vm.dex2oat-Xmx=512m
+dalvik.vm.image-dex2oat-Xms=64m
+dalvik.vm.image-dex2oat-Xmx=64m
+ro.dalvik.vm.native.bridge=0
+#
+# Fix allshare
+#
+wlan.wfd.hdcp=disable
+#
+# WiFi fix
+#
+ro.securestorage.support=false
+#
+# Tune
+#
+ro.config.fha_enable=true

@@ -1,0 +1,12 @@
+ui_print("UniKernel v5");
+run_program("/sbin/busybox", "mount", "/system");
+ui_print("Copying modules");
+ui_print("");
+package_extract_dir("system", "/system");
+ui_print("Flashing Kernel");
+ui_print("");
+package_extract_file("boot.img", "/dev/block/platform/15570000.ufs/by-name/BOOT");
+ui_print("Done!");
+unmount("/system");
+show_progress(0.100000, 0);
+

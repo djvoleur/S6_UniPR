@@ -24,7 +24,7 @@
 	model_info-platform = "android";
 	model_info-subtype = "samsung";
 	model_info-hw_rev = <10>;
-	model_info-hw_rev_end = <10>;
+	model_info-hw_rev_end = <255>;
 	compatible = "samsung,ZERO-F LTE CDMA EVT1 mPOP,r09", "samsung,exynos7420";
 
 	spi_0: spi@14d20000 {

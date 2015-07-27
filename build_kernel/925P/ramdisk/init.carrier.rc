@@ -1,0 +1,89 @@
+on init
+#carrier
+    mkdir /carrier 0771 system system
+
+on fs
+#carrier
+    wait /dev/block/platform/15570000.ufs/by-name/CARRIER
+    check_fs /dev/block/platform/15570000.ufs/by-name/CARRIER ext4
+    mount ext4 /dev/block/platform/15570000.ufs/by-name/CARRIER /carrier nosuid nodev barrier=1
+    chown system system /carrier
+    chmod 0771 /carrier
+    restorecon -R /carrier
+
+# this is for QCOM CP models.
+service ril-daemon /system/bin/rild
+    class main
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    socket rild-cas stream 660 casdrm mmb
+    user root
+    group radio cache inet misc audio log qcom_diag system drmrpc
+
+# DIAG
+service DIAG-daemon /system/bin/diagexe
+    class main
+    user root
+    group system radio inet net_raw
+
+# diag app for cp uart
+service diag_uart_log /system/bin/diag_uart_log
+    class main
+    user root
+    group radio
+
+# QMUX must be in multiple groups to support external process connections
+service qmuxd /system/bin/qmuxd
+    class main
+    user root
+    group radio audio bluetooth gps qcom_diag
+
+service diag_mdlog_start /system/bin/diag_mdlog
+    class late_start
+    user sdcard_rw
+    group system qcom_diag sdcard_rw sdcard_r media_rw
+    disabled
+    oneshot
+
+service diag_mdlog_stop /system/bin/diag_mdlog -k
+    class late_start
+    user sdcard_rw
+    group system qcom_diag sdcard_rw sdcard_r media_rw
+    disabled
+    oneshot
+
+on post-fs-data
+#ItsOn Property
+    mkdir /dev/socket/itson 02771 sprintitson sprintitson
+    start itsonbs
+
+# ItsOn Service
+service itsonbs /system/vendor/itson/itson-bootstrapper.sh
+    oneshot
+    critical
+    seclabel u:r:itsonbs:s0
+
+#SLocation
+service cellgeofenced /system/bin/cellgeofenced
+    class main
+    socket cellgeofence seqpacket 0660 gps system
+    user gps
+    group system inet
+
+#
+# VOWIFI - This RILD defined here will override the service defined
+# in the main init.rc to support Sprint VoWiFi project
+#
+service ril-daemon /system/bin/rild
+    class main
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    socket rild-cas stream 660 casdrm mmb
+#
+# VoWiFi: Added cfiat and kipc socket for Sprint VoWiFi project.
+    socket cfiat stream 660 radio inet
+    socket kipc stream 660 radio inet
+# End of VoWiFi
+#
+    user root
+    group radio cache inet misc audio log qcom_diag
