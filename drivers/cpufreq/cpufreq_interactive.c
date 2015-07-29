@@ -86,7 +86,7 @@ static spinlock_t regionchange_cpumask_lock;
 #endif
 
 /* Target load.  Lower values result in higher CPU speeds. */
-#define DEFAULT_TARGET_LOAD 90
+#define DEFAULT_TARGET_LOAD 85
 static unsigned int default_target_loads[] = {DEFAULT_TARGET_LOAD};
 
 #define DEFAULT_TIMER_RATE (20 * USEC_PER_MSEC)
@@ -140,7 +140,7 @@ struct cpufreq_interactive_tunables {
 	/* Hi speed to bump to from lo speed when load burst (default max) */
 	unsigned int hispeed_freq;
 	/* Go to hi speed when CPU load at or above this value. */
-#define DEFAULT_GO_HISPEED_LOAD 99
+#define DEFAULT_GO_HISPEED_LOAD 95
 	unsigned long go_hispeed_load;
 	/* Target load. Lower values result in higher CPU speeds. */
 	spinlock_t target_loads_lock;
@@ -150,7 +150,7 @@ struct cpufreq_interactive_tunables {
 	 * The minimum amount of time to spend at a frequency before we can ramp
 	 * down.
 	 */
-#define DEFAULT_MIN_SAMPLE_TIME (80 * USEC_PER_MSEC)
+#define DEFAULT_MIN_SAMPLE_TIME (20 * USEC_PER_MSEC)
 	unsigned long min_sample_time;
 	/*
 	 * The sample rate of the timer used to increase frequency
@@ -695,16 +695,12 @@ static void cpufreq_interactive_timer(unsigned long data)
 	if (WARN_ON_ONCE(!delta_time))
 		goto rearm;
 #ifdef CONFIG_MODE_AUTO_CHANGE
-	spin_lock_irqsave(&tunables->mode_lock, flags);
-
-	tunables->enforced_mode = 1;
-	new_mode = tunables->enforced_mode;
-
-	if (new_mode != tunables->mode) {
-		tunables->mode = new_mode;
+    if (tunables->mode != 2) {
+		spin_lock_irqsave(&tunables->mode_lock, flags);
+		tunables->mode = 2;
 		enter_mode(tunables);
+		spin_unlock_irqrestore(&tunables->mode_lock, flags);
 	}
-	spin_unlock_irqrestore(&tunables->mode_lock, flags);
 #endif
 	spin_lock_irqsave(&pcpu->target_freq_lock, flags);
 	do_div(cputime_speedadj, delta_time);
@@ -2528,7 +2524,7 @@ static
 struct cpufreq_governor cpufreq_gov_interactive = {
 	.name = "interactive",
 	.governor = cpufreq_governor_interactive,
-	.max_transition_latency = 10000000,
+	.max_transition_latency = 20000,
 	.owner = THIS_MODULE,
 };
 
