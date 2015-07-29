@@ -4230,10 +4230,6 @@ static int decon_esd_panel_reset(struct decon_device *decon)
 	decon->update_win.y = 0;
 	decon->update_win.w = decon->lcd_info->xres;
 	decon->update_win.h = decon->lcd_info->yres;
-<<<<<<< HEAD
-	decon->force_fullupdate = 1;
-=======
->>>>>>> 99b6909... Video: Decon: Remove forced fullscreen update
 
 #if 0
 	if (decon->pdata->trig_mode == DECON_HW_TRIG)
