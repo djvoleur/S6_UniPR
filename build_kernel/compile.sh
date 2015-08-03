@@ -4,6 +4,7 @@ grn=$(tput setaf 2) # green
 DATEFORMAT=$(date +"%m%d%y")
 COMPILED_KERNEL=arch/arm64/boot/Image
 ROOT=build_kernel
+VERSION=v6-0001
 export ccache=ccache
 export USE_SEC_FIPS_MODE=true
 export KCONFIG_NOTIMESTAMP=true
@@ -66,12 +67,12 @@ then
     mv $VARIANT/boot.img boot.img
     cp boot.img zip/boot.img
     echo "${red}Making boot.img ODIN flashable...$(tput sgr0)"
-    tar -c boot.img > UniKernel-v6-$VARIANT-$DATEFORMAT.tar
-    mv boot.img UniKernel-v6-$VARIANT-$DATEFORMAT.img
+    tar -c boot.img > UniKernel-$VERSION-$VARIANT-$DATEFORMAT.tar
+    mv boot.img UniKernel-$VERSION-$VARIANT-$DATEFORMAT.img
     echo "${red}Making boot.img TWRP/Flashfire zip...$(tput sgr0)"
     cd zip
     zip -r V .
-    mv V.zip ../UniKernel-v6-$VARIANT-$DATEFORMAT.zip
+    mv V.zip ../UniKernel-$VERSION-$VARIANT-$DATEFORMAT.zip
     echo "${red}Clean up...$(tput sgr0)"
     rm -rf ../fmp_hmac.bin
     rm -rf ../fips_fmp_utils
